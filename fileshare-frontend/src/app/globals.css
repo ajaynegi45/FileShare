@@ -1,26 +1,76 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+
+:root {
+  /* Light Mode (Default) */
+  --background: #ffffff;
+  --surface: #f4f4f5;
+
+  /* Zinc-100 */
+  --surface-hover: #e4e4e7;
+
+  /* Zinc-200 */
+  --border: #e4e4e7;
+
+  /* Zinc-200 */
+  --foreground: #09090b;
+
+  /* Zinc-950 */
+  --secondary: #71717a;
+
+  /* Zinc-500 */
+  --accent: #2563eb;
+
+  /* Blue-600 */
+  --accent-foreground: #ffffff;
 }
+
+.dark {
+  /* Dark Mode Overrides */
+  --background: #000000;
+  --surface: #121212;
+
+  /* Neutral-950/Zinc-950ish */
+  --surface-hover: #171717;
+
+  /* Neutral-900 */
+  --border: #262626;
+
+  /* Neutral-800 */
+  --foreground: #ffffff;
+  --secondary: #a3a3a3;
+
+  /* Neutral-400 */
+  --accent: #3b82f6;
+
+  /* Blue-500 */
+  --accent-foreground: #ffffff;
+}
+
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.loading-dots .dot {
+  fill: var(--foreground);
 }

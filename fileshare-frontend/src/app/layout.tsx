@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
 import Image from "next/image";
+import { Toaster } from 'sonner'
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,12 +29,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-    <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
+    <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+
     <Suspense fallback={
-        <div role="status" aria-live="polite"
-             className="fixed inset-0 flex items-center justify-center bg-white z-50">
+        <div role="status" aria-live="polite" className="fixed inset-0 flex items-center justify-center bg-white z-50">
             <Image
                 src="/FileShareIcon.svg"
                 alt="Loading..."
@@ -42,7 +42,8 @@ export default function RootLayout({
                 fetchPriority={"high"}
             />
         </div>}>
-        {children}
+      <Toaster richColors  position="bottom-right" />
+      {children}
     </Suspense>
     </body>
     </html>
