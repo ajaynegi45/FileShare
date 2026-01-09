@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { type TransferProgress, INITIAL_PROGRESS } from '@/lib/protocol/TransferState';
+import {create} from 'zustand';
+import {INITIAL_PROGRESS, type TransferProgress} from '@/lib/protocol/TransferState';
 
 // Interface representing the P2P connection and session state
 export interface P2PState {
@@ -73,9 +73,9 @@ export const useTransferStore = create<TransferStore>((set) => ({
     progress: INITIAL_PROGRESS,
 
     // P2P Actions
-    setP2PState: (newState) => set((state) => ({ p2p: { ...state.p2p, ...newState } })),
+    setP2PState: (newState) => set((state) => ({p2p: {...state.p2p, ...newState}})),
 
-    resetP2P: () => set({ p2p: INITIAL_P2P_STATE }),
+    resetP2P: () => set({p2p: INITIAL_P2P_STATE}),
 
     // File Actions
     setSelectedFiles: (files) => {
@@ -89,18 +89,18 @@ export const useTransferStore = create<TransferStore>((set) => ({
         }));
     },
 
-    setCurrentFileIndex: (index) => set((state) => ({ file: { ...state.file, currentFileIndex: index } })),
+    setCurrentFileIndex: (index) => set((state) => ({file: {...state.file, currentFileIndex: index}})),
 
-    setTransferStarted: (started) => set((state) => ({ file: { ...state.file, transferStarted: started } })),
+    setTransferStarted: (started) => set((state) => ({file: {...state.file, transferStarted: started}})),
 
-    setIsComplete: (complete) => set((state) => ({ file: { ...state.file, isComplete: complete } })),
+    setIsComplete: (complete) => set((state) => ({file: {...state.file, isComplete: complete}})),
 
-    resetFileState: () => set({ file: INITIAL_FILE_STATE }),
+    resetFileState: () => set({file: INITIAL_FILE_STATE}),
 
     // Progress Actions
-    setProgress: (progress) => set({ progress }),
+    setProgress: (progress) => set({progress}),
 
-    resetProgress: () => set({ progress: INITIAL_PROGRESS }),
+    resetProgress: () => set({progress: INITIAL_PROGRESS}),
 
     // Composite Actions
     resetAll: () => set({

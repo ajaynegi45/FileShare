@@ -12,9 +12,19 @@
  * - Supports resume via received ranges exchange
  */
 
-import { CHUNK_SIZE, decodeChunk, type FileMetadata, type AckMessage, type NackMessage, type TransferCompleteMessage, type ControlMessage, type ProtocolMessage, isBinaryChunk } from '../protocol/ChunkProtocol';
-import { ReceivedRanges } from '../protocol/FlowControl';
-import { type TransferProgress, SpeedCalculator, calculateEta } from '../protocol/TransferState';
+import {
+    type AckMessage,
+    CHUNK_SIZE,
+    type ControlMessage,
+    decodeChunk,
+    type FileMetadata,
+    isBinaryChunk,
+    type NackMessage,
+    type ProtocolMessage,
+    type TransferCompleteMessage
+} from '../protocol/ChunkProtocol';
+import {ReceivedRanges} from '../protocol/FlowControl';
+import {calculateEta, SpeedCalculator, type TransferProgress} from '../protocol/TransferState';
 import {toast} from "sonner";
 
 export interface ReceiverConfig {
@@ -57,7 +67,7 @@ export class Receiver {
     private nackTimer: ReturnType<typeof setTimeout> | null = null;
 
     constructor(config: Partial<ReceiverConfig> = {}) {
-        this.config = { ...DEFAULT_CONFIG, ...config };
+        this.config = {...DEFAULT_CONFIG, ...config};
     }
 
     /** --- Initializes the receiver with a data channel and progress callback --- */
@@ -67,6 +77,40 @@ export class Receiver {
 
         dataChannel.binaryType = 'arraybuffer';
         dataChannel.onmessage = (event) => this.handleDataChannelMessage(event);
+    }
+
+    /** --- Returns received ranges for resume protocol --- */
+    getReceivedRanges(): [number, number][] {
+        return this.receivedRanges?.getRanges() || [];
+    }
+
+    /** --- Loads previously received ranges for resume --- */
+    loadReceivedRanges(ranges: [number, number][]): void {
+        this.receivedRanges?.loadFromRanges(ranges);
+    }
+
+    /** --- Pauses receiving (e.g., for user interaction) --- */
+    pause(): void {
+        this.sendControl('pause');
+        this.updateProgress('paused');
+    }
+
+    /** --- Resumes receiving --- */
+    resume(): void {
+        this.sendControl('resume');
+        this.updateProgress('transferring');
+    }
+
+    /** --- Cleans up resources --- */
+    cleanup(): void {
+        if (this.nackTimer) {
+            clearInterval(this.nackTimer);
+        }
+        if (this.writableStream) {
+            this.writableStream.close().catch(() => {
+            });
+        }
+        this.chunks.clear();
     }
 
     /** --- Handles incoming data (both binary chunks and JSON messages) --- */
@@ -126,7 +170,7 @@ export class Receiver {
         }
 
         try {
-            const { chunkIndex, payload } = decodeChunk(buffer);
+            const {chunkIndex, payload} = decodeChunk(buffer);
 
             // Skip duplicates
             if (this.receivedRanges.hasChunk(chunkIndex)) {
@@ -186,7 +230,7 @@ export class Receiver {
                 suggestedName,
                 types: [{
                     description: 'All Files',
-                    accept: { '*/*': [] },
+                    accept: {'*/*': []},
                 }],
             });
 
@@ -203,7 +247,7 @@ export class Receiver {
 
         // Send individual ACKs (could optimize with batch ACK message)
         for (const chunkIndex of this.pendingAcks) {
-            const ack: AckMessage = { type: 'ack', chunkIndex };
+            const ack: AckMessage = {type: 'ack', chunkIndex};
             this.dataChannel.send(JSON.stringify(ack));
         }
         this.pendingAcks = [];
@@ -212,7 +256,7 @@ export class Receiver {
     /** --- Sends a control message to sender --- */
     private sendControl(action: ControlMessage['action']): void {
         if (!this.dataChannel) return;
-        const msg: ControlMessage = { type: 'control', action };
+        const msg: ControlMessage = {type: 'control', action};
         this.dataChannel.send(JSON.stringify(msg));
     }
 
@@ -232,12 +276,12 @@ export class Receiver {
             return;
         }
 
-        const nack: NackMessage = { type: 'nack', missingChunks: missing.slice(0, 20) };
+        const nack: NackMessage = {type: 'nack', missingChunks: missing.slice(0, 20)};
         try {
             this.dataChannel.send(JSON.stringify(nack));
         } catch (err) {
             console.error('Failed to send NACK', err);
-            toast.error('Network error', { description: 'Could not request missing chunks.' });
+            toast.error('Network error', {description: 'Could not request missing chunks.'});
         }
     }
 
@@ -289,7 +333,7 @@ export class Receiver {
         const sortedIndices = Array.from(this.chunks.keys()).sort((a, b) => a - b);
         const parts: Uint8Array[] = sortedIndices.map(i => this.chunks.get(i)!);
 
-        const blob = new Blob(parts as BlobPart[], { type: this.fileMeta.mimeType });
+        const blob = new Blob(parts as BlobPart[], {type: this.fileMeta.mimeType});
         const url = URL.createObjectURL(blob);
 
         // Trigger download
@@ -303,28 +347,6 @@ export class Receiver {
         this.chunks.clear();
 
         this.updateProgress('completed');
-    }
-
-    /** --- Returns received ranges for resume protocol --- */
-    getReceivedRanges(): [number, number][] {
-        return this.receivedRanges?.getRanges() || [];
-    }
-
-    /** --- Loads previously received ranges for resume --- */
-    loadReceivedRanges(ranges: [number, number][]): void {
-        this.receivedRanges?.loadFromRanges(ranges);
-    }
-
-    /** --- Pauses receiving (e.g., for user interaction) --- */
-    pause(): void {
-        this.sendControl('pause');
-        this.updateProgress('paused');
-    }
-
-    /** --- Resumes receiving --- */
-    resume(): void {
-        this.sendControl('resume');
-        this.updateProgress('transferring');
     }
 
     private updateProgress(status: TransferProgress['status'], error?: string): void {
@@ -349,16 +371,5 @@ export class Receiver {
         };
 
         this.onProgress(progress);
-    }
-
-    /** --- Cleans up resources --- */
-    cleanup(): void {
-        if (this.nackTimer) {
-            clearInterval(this.nackTimer);
-        }
-        if (this.writableStream) {
-            this.writableStream.close().catch(() => { });
-        }
-        this.chunks.clear();
     }
 }

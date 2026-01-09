@@ -1,22 +1,35 @@
 /**
  * Sender transport for chunked file transfer with backpressure.
- * 
+ *
  * MEMORY INVARIANTS:
  * - Never loads entire file into memory
  * - Uses File.slice() for streaming reads
  * - Outstanding bytes bounded by SlidingWindow
- * 
+ *
  * BACKPRESSURE IMPLEMENTATION:
  * 1. Checks SlidingWindow before sending
  * 2. Monitors DataChannel.bufferedAmount
  * 3. Waits for ACKs before sending more
  */
 
-import { CHUNK_SIZE, encodeChunk, createFileMetadata, type AckMessage, type NackMessage, type ControlMessage, type ProtocolMessage } from '../protocol/ChunkProtocol';
-import { SlidingWindow } from '../protocol/FlowControl';
-import {type TransferProgress, SpeedCalculator, calculateEta } from '../protocol/TransferState';
+import {
+    type AckMessage,
+    CHUNK_SIZE,
+    type ControlMessage,
+    createFileMetadata,
+    encodeChunk,
+    type NackMessage,
+    type ProtocolMessage
+} from '../protocol/ChunkProtocol';
+import {SlidingWindow} from '../protocol/FlowControl';
+import {calculateEta, SpeedCalculator, type TransferProgress} from '../protocol/TransferState';
 import {toast} from "sonner";
-export interface SenderConfig { maxOutstandingBytes: number; bufferedAmountLowThreshold: number; }
+
+export interface SenderConfig {
+    maxOutstandingBytes: number;
+    bufferedAmountLowThreshold: number;
+}
+
 const DEFAULT_CONFIG: SenderConfig = {
     maxOutstandingBytes: 8 * 1024 * 1024, // 8MB
     bufferedAmountLowThreshold: 256 * 1024, // 256KB - resume sending when buffer drops below this
@@ -50,7 +63,7 @@ export class Sender {
     private bufferLowResolver: (() => void) | null = null;
 
     constructor(config: Partial<SenderConfig> = {}) {
-        this.config = { ...DEFAULT_CONFIG, ...config };
+        this.config = {...DEFAULT_CONFIG, ...config};
         this.window = new SlidingWindow({
             maxOutstandingBytes: this.config.maxOutstandingBytes
         });

@@ -1,11 +1,11 @@
 /**
  * Chunked streaming protocol for P2P file transfer.
- * 
+ *
  * BINARY FRAME FORMAT:
  * [0-3]   chunkIndex    (uint32, big-endian)
  * [4-7]   payloadLength (uint32, big-endian)
  * [8-N]   payload       (raw bytes)
- * 
+ *
  * DESIGN DECISIONS:
  * - Fixed 64KB chunks balance throughput with memory usage
  * - Binary format avoids base64 overhead (33% savings)
@@ -43,7 +43,7 @@ export function decodeChunk(buffer: ArrayBuffer): { chunkIndex: number; payload:
 
     const payload = new Uint8Array(buffer, HEADER_SIZE, payloadLength);
 
-    return { chunkIndex, payload };
+    return {chunkIndex, payload};
 }
 
 /** --- Calculates total number of chunks for a file --- */

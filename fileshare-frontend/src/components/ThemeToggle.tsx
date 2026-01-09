@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { FiSun, FiMoon } from 'react-icons/fi';
+import {useEffect, useState} from 'react';
+import {FiMoon, FiSun} from 'react-icons/fi';
 
 export default function ThemeToggle() {
     // Initialize state without accessing window/localStorage during SSR to prevent hydration mismatch
@@ -44,7 +44,7 @@ export default function ThemeToggle() {
 
     // Prevent hydration mismatch by rendering a placeholder or default until mounted
     if (!mounted) {
-        return <div className="w-9 h-9" />; // Placeholder to avoid layout shift
+        return <div className="w-9 h-9"/>; // Placeholder to avoid layout shift
     }
 
     return (
@@ -59,7 +59,7 @@ export default function ThemeToggle() {
       `}
             aria-label="Toggle theme"
         >
-            {theme === 'dark' ? <FiMoon className="w-5 h-5" /> : <FiSun className="w-5 h-5" />}
+            {theme === 'dark' ? <FiMoon className="w-5 h-5"/> : <FiSun className="w-5 h-5"/>}
         </button>
     );
 }

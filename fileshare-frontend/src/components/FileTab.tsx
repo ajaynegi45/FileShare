@@ -28,7 +28,8 @@ export default function FileTab() {
     const [activeTab, setActiveTab] = useState(TABS[0].id);
 
     return (
-        <>        <div className="grid grid-cols-2 p-1 bg-surface rounded-lg border border-border relative overflow-hidden ">
+        <>
+            <div className="grid grid-cols-2 p-1 bg-surface rounded-lg border border-border relative overflow-hidden ">
                 {TABS.map((tab) => {
                     const isActive = activeTab === tab.id;
                     return (
@@ -86,6 +87,6 @@ export default function FileTab() {
             {/* Bottom decorative line from the snippet */}
             {/*// <div className="mt-8 w-full h-px bg-[#050505] shadow-[0_1px_0_0_rgba(66,66,66,0.4)]"/>*/}
 
-    </>
+        </>
     );
 }

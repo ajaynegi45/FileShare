@@ -1,6 +1,6 @@
 /**
  * Transfer state management.
- * 
+ *
  * Immutable state updates via spread operator ensure
  * React can detect changes for re-rendering.
  */
@@ -48,7 +48,7 @@ export class SpeedCalculator {
 
     addSample(bytes: number): void {
         const now = Date.now();
-        this.samples.push({ timestamp: now, bytes });
+        this.samples.push({timestamp: now, bytes});
 
         // Prune old samples
         const cutoff = now - this.windowMs;
@@ -90,13 +90,13 @@ export class SpeedCalculator {
 }
 
 /** --- Calculates ETA based on remaining bytes and current speed --- */
-export function calculateEta( bytesRemaining: number, speedBytesPerSecond: number ): number | null {
+export function calculateEta(bytesRemaining: number, speedBytesPerSecond: number): number | null {
     if (speedBytesPerSecond <= 0) return null;
     return Math.ceil(bytesRemaining / speedBytesPerSecond);
 }
 
 /** --- Formats bytes for human-readable display --- */
-export function formatBytes( bytes: number ): string {
+export function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 B';
 
     const units = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -107,12 +107,12 @@ export function formatBytes( bytes: number ): string {
 }
 
 /** --- Formats speed for human-readable display --- */
-export function formatSpeed( bytesPerSecond: number ): string {
+export function formatSpeed(bytesPerSecond: number): string {
     return formatBytes(bytesPerSecond) + '/s';
 }
 
 /** --- Formats ETA for human-readable display --- */
-export function formatEta( seconds: number | null ): string {
+export function formatEta(seconds: number | null): string {
     if (seconds === null) return '--:--';
 
     if (seconds < 60) {

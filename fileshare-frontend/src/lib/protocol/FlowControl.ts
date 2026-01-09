@@ -1,17 +1,17 @@
 /**
  * Flow control with receiver-driven sliding window.
- * 
+ *
  * BACKPRESSURE INVARIANTS:
  * 1. Sender never has more than maxOutstandingBytes in flight
  * 2. Receiver ACKs trigger window advancement
  * 3. NACKs trigger selective retransmission
- * 
+ *
  * MEMORY BOUNDS:
  * - Sender: outstandingChunks map bounded by maxOutstandingBytes / CHUNK_SIZE
  * - Receiver: does not buffer (streams to disk or accumulates in controlled manner)
  */
 
-import { CHUNK_SIZE } from './ChunkProtocol';
+import {CHUNK_SIZE} from './ChunkProtocol';
 
 export interface FlowControlConfig {
     maxOutstandingBytes: number;  // Default 8MB
@@ -25,7 +25,7 @@ const DEFAULT_CONFIG: FlowControlConfig = {
 
 /**
  * Sliding window for sender-side flow control.
- * 
+ *
  * CONCURRENCY MODEL:
  * - Single-threaded (JavaScript event loop)
  * - Async operations coordinate via callbacks/promises
@@ -45,7 +45,7 @@ export class SlidingWindow {
     private paused = false;
 
     constructor(config: Partial<FlowControlConfig> = {}) {
-        this.config = { ...DEFAULT_CONFIG, ...config };
+        this.config = {...DEFAULT_CONFIG, ...config};
         this.maxChunksInFlight = Math.floor(
             this.config.maxOutstandingBytes / this.config.chunkSize
         );
@@ -122,7 +122,8 @@ export class SlidingWindow {
         this.outstandingChunks.clear();
         this.paused = false;
         // Reject all waiters
-        this.waitQueue.forEach(() => { }); // Let them GC
+        this.waitQueue.forEach(() => {
+        }); // Let them GC
         this.waitQueue = [];
     }
 

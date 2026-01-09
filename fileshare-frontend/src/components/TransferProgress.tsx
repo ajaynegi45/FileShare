@@ -1,7 +1,7 @@
 'use client';
 
-import { type TransferProgress, formatBytes, formatSpeed, formatEta } from '@/lib/protocol/TransferState';
-import { FiX, FiPause, FiPlay, FiAlertCircle } from 'react-icons/fi';
+import {formatBytes, formatEta, formatSpeed, type TransferProgress} from '@/lib/protocol/TransferState';
+import {FiAlertCircle, FiPause, FiPlay, FiX} from 'react-icons/fi';
 
 interface ProgressDisplayProps {
     progress: TransferProgress;
@@ -12,12 +12,12 @@ interface ProgressDisplayProps {
 }
 
 export default function TransferProgress({
-    progress,
-    role,
-    onPause,
-    onResume,
-    onCancel,
-}: ProgressDisplayProps) {
+                                             progress,
+                                             role,
+                                             onPause,
+                                             onResume,
+                                             onCancel,
+                                         }: ProgressDisplayProps) {
     const percentage = progress.totalBytes > 0
         ? Math.round((progress.bytesTransferred / progress.totalBytes) * 100)
         : 0;
@@ -34,8 +34,9 @@ export default function TransferProgress({
                     <span>{formatBytes(progress.bytesTransferred)} / {formatBytes(progress.totalBytes)}</span>
                 </div>
                 <div className="relative w-full h-1.5 bg-neutral-700 rounded-full overflow-hidden">
-                    <div className={`absolute left-0 top-0 h-full transition-all duration-300 ease-out ${isFailed ? 'bg-red-500' : progress.status === 'paused' ? 'bg-amber-500' : 'bg-neutral-300' }`}
-                        style={{ width: `${percentage}%` }}
+                    <div
+                        className={`absolute left-0 top-0 h-full transition-all duration-300 ease-out ${isFailed ? 'bg-red-500' : progress.status === 'paused' ? 'bg-amber-500' : 'bg-neutral-300'}`}
+                        style={{width: `${percentage}%`}}
                     />
                 </div>
             </div>
@@ -43,7 +44,7 @@ export default function TransferProgress({
             {/* Error Message */}
             {isFailed && (
                 <div className="flex items-center gap-2 text-sm text-red-500 bg-red-500/10 p-2 rounded">
-                    <FiAlertCircle className="w-4 h-4" />
+                    <FiAlertCircle className="w-4 h-4"/>
                     <span>{progress.error || 'Transfer failed'}</span>
                 </div>
             )}
@@ -70,21 +71,21 @@ export default function TransferProgress({
                             onClick={onResume}
                             className="flex-1 flex items-center justify-center gap-2 py-2 bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-medium rounded transition-colors cursor-pointer"
                         >
-                            <FiPlay className="w-3 h-3" /> Resume
+                            <FiPlay className="w-3 h-3"/> Resume
                         </button>
                     ) : (
                         <button
                             onClick={onPause}
                             className="flex-1 flex items-center justify-center gap-2 py-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-medium rounded transition-colors cursor-pointer"
                         >
-                            <FiPause className="w-3 h-3" /> Pause
+                            <FiPause className="w-3 h-3"/> Pause
                         </button>
                     )}
                     <button
                         onClick={onCancel}
                         className="px-3 py-2 bg-neutral-900 border border-neutral-800 hover:border-red-900/50 hover:text-red-500 text-neutral-500 text-xs font-medium rounded transition-colors cursor-pointer"
                     >
-                        <FiX className="w-4 h-4" />
+                        <FiX className="w-4 h-4"/>
                     </button>
                 </div>
             )}

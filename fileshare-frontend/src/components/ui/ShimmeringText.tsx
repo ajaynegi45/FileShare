@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useMemo, useRef } from 'react';
-import { motion, useInView, UseInViewOptions } from 'motion/react';
+import React, {useMemo, useRef} from 'react';
+import {motion, useInView, UseInViewOptions} from 'motion/react';
 
 interface ShimmeringTextProps {
     /** Text to display with shimmer effect */
@@ -44,7 +44,7 @@ export function ShimmeringText({
                                    shimmerColor,
                                }: ShimmeringTextProps) {
     const ref = useRef<HTMLSpanElement>(null);
-    const isInView = useInView(ref, { once, margin: inViewMargin });
+    const isInView = useInView(ref, {once, margin: inViewMargin});
 
     // Calculate dynamic spread based on text length
     const dynamicSpread = useMemo(() => {
@@ -57,12 +57,12 @@ export function ShimmeringText({
     return (
         <motion.span
             ref={ref}
-            className={" relative inline-block bg-[length:250%_100%,auto] bg-clip-text text-transparent [--base-color:var(--color-zinc-400)] [--shimmer-color:var(--color-zinc-950)] [background-repeat:no-repeat,padding-box] [--shimmer-bg:linear-gradient(90deg,transparent_calc(50%-var(--spread)),var(--shimmer-color),transparent_calc(50%+var(--spread)))] dark:[--base-color:var(--color-zinc-600)] dark:[--shimmer-color:var(--color-white)]" }
+            className={" relative inline-block bg-[length:250%_100%,auto] bg-clip-text text-transparent [--base-color:var(--color-zinc-400)] [--shimmer-color:var(--color-zinc-950)] [background-repeat:no-repeat,padding-box] [--shimmer-bg:linear-gradient(90deg,transparent_calc(50%-var(--spread)),var(--shimmer-color),transparent_calc(50%+var(--spread)))] dark:[--base-color:var(--color-zinc-600)] dark:[--shimmer-color:var(--color-white)]"}
             style={
                 {
                     '--spread': `${dynamicSpread}px`,
-                    ...(color && { '--base-color': color }),
-                    ...(shimmerColor && { '--shimmer-color': shimmerColor }),
+                    ...(color && {'--base-color': color}),
+                    ...(shimmerColor && {'--shimmer-color': shimmerColor}),
                     backgroundImage: `var(--shimmer-bg), linear-gradient(var(--base-color), var(--base-color))`,
                 } as React.CSSProperties
             }

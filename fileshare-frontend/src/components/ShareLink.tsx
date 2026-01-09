@@ -1,15 +1,15 @@
 'use client';
 
-import {useState, useEffect, useRef} from 'react';
-import { QRCodeSVG } from 'qrcode.react';
-import { FiCopy, FiCheck, FiLink, FiGrid } from 'react-icons/fi';
-import { toast } from 'sonner'
+import {useEffect, useRef, useState} from 'react';
+import {QRCodeSVG} from 'qrcode.react';
+import {FiCheck, FiCopy, FiGrid, FiLink} from 'react-icons/fi';
+import {toast} from 'sonner'
 
 interface ShareLinkProps {
     pin: string;
 }
 
-export default function ShareLink({ pin }: ShareLinkProps) {
+export default function ShareLink({pin}: ShareLinkProps) {
     const [copied, setCopied] = useState(false);
     const [showQR, setShowQR] = useState(false);
     const [shareUrl, setShareUrl] = useState('');
@@ -67,7 +67,6 @@ export default function ShareLink({ pin }: ShareLinkProps) {
     };
 
 
-
     const showCopySuccess = (type: 'pin' | 'link') => {
         toast.success(
             type === 'pin'
@@ -94,7 +93,7 @@ export default function ShareLink({ pin }: ShareLinkProps) {
     const copyToClipboard = async (text: string) => {
 
         if (expired) {
-            toast.error('PIN expired', { description: 'This PIN has expired — try again.' });
+            toast.error('PIN expired', {description: 'This PIN has expired — try again.'});
             return;
         }
 
@@ -111,32 +110,32 @@ export default function ShareLink({ pin }: ShareLinkProps) {
 
                 // fallthrough to legacy fallback
             }
-        }else {
+        } else {
 
-        // Legacy fallback (widely supported, works on many mobile browsers / older Safari)
-        try {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            // Make textarea non-editable and visually off-screen
-            textarea.setAttribute('readonly', '');
-            textarea.style.position = 'absolute';
-            textarea.style.left = '-9999px';
-            document.body.appendChild(textarea);
+            // Legacy fallback (widely supported, works on many mobile browsers / older Safari)
+            try {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                // Make textarea non-editable and visually off-screen
+                textarea.setAttribute('readonly', '');
+                textarea.style.position = 'absolute';
+                textarea.style.left = '-9999px';
+                document.body.appendChild(textarea);
 
-            // iOS special handling: selectionRange is needed
-            textarea.select();
-            textarea.setSelectionRange(0, textarea.value.length);
+                // iOS special handling: selectionRange is needed
+                textarea.select();
+                textarea.setSelectionRange(0, textarea.value.length);
 
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            setCopied(true);
-            showCopySuccess(text === pin ? 'pin' : 'link');
-            setTimeout(() => setCopied(false), 2000);
-        } catch (err) {
-            console.error('Fallback copy failed:', err);
-            showCopyError();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                setCopied(true);
+                showCopySuccess(text === pin ? 'pin' : 'link');
+                setTimeout(() => setCopied(false), 2000);
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+                showCopyError();
 
-        }
+            }
         }
     };
 
@@ -159,7 +158,7 @@ export default function ShareLink({ pin }: ShareLinkProps) {
                         }`}
                         title="Copy PIN"
                     >
-                        {copied ? <FiCheck className="w-5 h-5" /> : <FiCopy className="w-5 h-5" />}
+                        {copied ? <FiCheck className="w-5 h-5"/> : <FiCopy className="w-5 h-5"/>}
                     </button>
                 </div>
             </div>
@@ -170,7 +169,7 @@ export default function ShareLink({ pin }: ShareLinkProps) {
                     onClick={() => copyToClipboard(shareUrl)}
                     className="col-span-2 flex items-center justify-center gap-2 px-4 py-2 cursor-pointer bg-foreground text-background text-sm font-medium rounded-lg hover:opacity-90 transition-opacity"
                 >
-                    <FiLink className="w-4 h-4" />
+                    <FiLink className="w-4 h-4"/>
                     Copy Link
                 </button>
 
@@ -182,14 +181,15 @@ export default function ShareLink({ pin }: ShareLinkProps) {
                     }`}
                     title="Show QR Code"
                 >
-                    <FiGrid className="w-4 h-4" />
+                    <FiGrid className="w-4 h-4"/>
                     QR
                 </button>
             </div>
 
             {/* QR Code */}
             {showQR && (
-                <div className="flex justify-center p-4 bg-white rounded-lg animate-in fade-in zoom-in duration-200 border border-border">
+                <div
+                    className="flex justify-center p-4 bg-white rounded-lg animate-in fade-in zoom-in duration-200 border border-border">
                     <QRCodeSVG
                         value={shareUrl}
                         size={160}

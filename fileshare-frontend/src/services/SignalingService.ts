@@ -7,6 +7,11 @@ export class SignalingService {
         this.url = url;
     }
 
+    // Gets the current WebSocket state.
+    public get isConnected(): boolean {
+        return this.socket?.readyState === WebSocket.OPEN;
+    }
+
     public connect(onOpen: () => void, onMessage: (msg: any) => void, onClose: () => void, onError: (error: Event) => void): WebSocket {
         if (this.socket) this.socket.close();
 
@@ -31,7 +36,7 @@ export class SignalingService {
     public send(action: string, payload: any): void {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             // API Gateway expects "action" in the body for routing via $request.body.action
-            const message = { action, ...payload };
+            const message = {action, ...payload};
             this.socket.send(JSON.stringify(message));
         } else {
             console.warn('Cannot send message: WebSocket is not open.');
@@ -40,12 +45,12 @@ export class SignalingService {
 
     // Send for ICE candidates.
     public sendCandidate(candidate: RTCIceCandidate): void {
-        this.send('candidate', { payload: candidate.toJSON() });
+        this.send('candidate', {payload: candidate.toJSON()});
     }
 
     // Send for Session Descriptions (Offer/Answer).
     public sendSDP(type: 'offer' | 'answer', description: RTCSessionDescriptionInit): void {
-        this.send(type, { payload: description });
+        this.send(type, {payload: description});
     }
 
     // Properly closes the signaling socket.
@@ -54,11 +59,6 @@ export class SignalingService {
             this.socket.close();
             this.socket = null;
         }
-    }
-
-    // Gets the current WebSocket state.
-    public get isConnected(): boolean {
-        return this.socket?.readyState === WebSocket.OPEN;
     }
 }
 

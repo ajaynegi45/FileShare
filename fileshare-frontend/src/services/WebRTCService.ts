@@ -1,18 +1,24 @@
-
 // Handles PeerConnection and DataChannel setup
 export class WebRTCService {
     private peerConnection: RTCPeerConnection | null = null;
     private dataChannel: RTCDataChannel | null = null;
     private config: RTCConfiguration = {
         iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
+            {urls: 'stun:stun.l.google.com:19302'},
+            {urls: 'stun:stun1.l.google.com:19302'},
         ],
     };
 
+    public get getPeerConnection(): RTCPeerConnection | null {
+        return this.peerConnection;
+    }
+
+    public get getDataChannel(): RTCDataChannel | null {
+        return this.dataChannel;
+    }
 
     // Initializes a new PeerConnection
-    public createPeerConnection( onIceCandidate: (candidate: RTCIceCandidate) => void, onConnectionStateChange: (state: RTCPeerConnectionState) => void, onDataChannel: (channel: RTCDataChannel) => void): RTCPeerConnection {
+    public createPeerConnection(onIceCandidate: (candidate: RTCIceCandidate) => void, onConnectionStateChange: (state: RTCPeerConnectionState) => void, onDataChannel: (channel: RTCDataChannel) => void): RTCPeerConnection {
 
         if (this.peerConnection) this.close();
 
@@ -35,16 +41,14 @@ export class WebRTCService {
         return peerConnection;
     }
 
-
     // Creates a data channel (Initiator only)
     public createDataChannel(label: string): RTCDataChannel {
         if (!this.peerConnection) throw new Error('PeerConnection not initialized');
 
-        const dc = this.peerConnection.createDataChannel(label, { ordered: true });
+        const dc = this.peerConnection.createDataChannel(label, {ordered: true});
         this.dataChannel = dc;
         return dc;
     }
-
 
     // Generates an SDP offer
     public async createOffer(): Promise<RTCSessionDescriptionInit> {
@@ -53,7 +57,6 @@ export class WebRTCService {
         await this.peerConnection.setLocalDescription(offer);
         return offer;
     }
-
 
     // Processes an incoming SDP offer and generates an SDP answer
     public async createAnswer(offer: RTCSessionDescriptionInit): Promise<RTCSessionDescriptionInit> {
@@ -64,13 +67,11 @@ export class WebRTCService {
         return answer;
     }
 
-
     // Processes an incoming SDP answer
     public async setRemoteAnswer(answer: RTCSessionDescriptionInit): Promise<void> {
         if (!this.peerConnection) throw new Error('PeerConnection not initialized');
         await this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
     }
-
 
     // Adds an incoming ICE candidate
     public async addCandidate(candidate: RTCIceCandidateInit): Promise<void> {
@@ -82,7 +83,6 @@ export class WebRTCService {
         }
     }
 
-
     // Closes the connection and channel
     public close(): void {
         if (this.dataChannel) {
@@ -93,15 +93,5 @@ export class WebRTCService {
             this.peerConnection.close();
             this.peerConnection = null;
         }
-    }
-
-
-    public get getPeerConnection(): RTCPeerConnection | null {
-        return this.peerConnection;
-    }
-
-
-    public get getDataChannel(): RTCDataChannel | null {
-        return this.dataChannel;
     }
 }
