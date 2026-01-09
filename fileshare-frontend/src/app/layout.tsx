@@ -4,6 +4,7 @@ import "./globals.css";
 import { Suspense } from "react";
 import Image from "next/image";
 import { Toaster } from 'sonner'
+import FileShareIcon from "@/assest/FileShareIcon.svg"
 
 
 const geistSans = Geist({
@@ -17,9 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FileShare",
+  title: "FileShare | Secure P2P File Transfer" ,
   description: "Secure P2P File Transfer",
-  icons: {icon: "/FileShareIcon.svg"},
+  icons: {icon: FileShareIcon.src},
 };
 
 export default function RootLayout({
@@ -32,9 +33,9 @@ export default function RootLayout({
     <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 
     <Suspense fallback={
-        <div role="status" aria-live="polite" className="fixed inset-0 flex items-center justify-center bg-white z-50">
+        <div role="status" aria-live="polite" className="fixed inset-0 flex items-center justify-center bg-background z-50">
             <Image
-                src="/FileShareIcon.svg"
+                src={FileShareIcon.src}
                 alt="Loading..."
                 width={120}
                 height={120}
