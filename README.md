@@ -58,4 +58,4 @@ The system follows a WebRTC-based architecture:
 
 ---
 
-For more detailed technical information, see [ARCHITECTURE.md](docs/ARCHITECTURE.md).
+For more detailed technical information, see [ARCHITECTURE.md](/ARCHITECTURE.md).
